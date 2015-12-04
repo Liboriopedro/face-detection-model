@@ -159,6 +159,7 @@ int main(int argc, char *argv[])
                     bool addNeg=true;
                     for(int objectNum=0;objectNum<n;objectNum++)
                     {
+                        // FIX: вынести 0.3 в объявление констант
                         if(IOU(norm5Object[objectNum],sample)>0.3)
                         {
                             addNeg=false;
@@ -192,9 +193,8 @@ int main(int argc, char *argv[])
     {
         params.kernel_type = CvSVM::LINEAR;
     }
-    else
+    else if(SVMType=="POLY") 
     {
-        if(SVMType=="POLY")
         {
             params.kernel_type = CvSVM::POLY;
             config["SVMDegree"]>>params.degree;
@@ -204,6 +204,7 @@ int main(int argc, char *argv[])
     params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 500, 1e-6);
     CvSVM svm;
 
+    // FIX: заменить train на train_auto
     svm.train(features,label, Mat(),Mat(),params);
 
     pyramid.addRootFilter(filterSize, &svm);
@@ -213,6 +214,7 @@ int main(int argc, char *argv[])
     int retrainIter=0;
     int maxSampleCount;
     config["SampleMaxCount"]>>maxSampleCount;
+    // FIX: по факту цикл идентичен предыдущему
     while(retrainIter<countRetrainIter && features.cols<maxSampleCount)
     {
         train_file.clear();
@@ -236,6 +238,7 @@ int main(int argc, char *argv[])
                 bool addFalsePositive=true;
                 for(int objectNum=0;objectNum<n;objectNum++)
                 {
+                    // FIX: а почему выше порог 0.3, а здесь 0.4?
                     if(IOU(objects[objectNum],detectedObject[i].originalImageBox)>0.4)
                     {
                         addFalsePositive=false;
@@ -258,6 +261,7 @@ int main(int argc, char *argv[])
 
         pyramid.clearFilter();
 
+        // FIX: заменить train на train_auto
         svm.train(features,label, Mat(),Mat(),params);
         pyramid.addRootFilter(filterSize,&svm);
         retrainIter++;
