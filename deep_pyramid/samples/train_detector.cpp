@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
     config["HardNegTrainIter"]>>countRetrainIter;
     int retrainIter=0;
     int maxSampleCount;
-    config["SampleMaxCount"]>>maxSampleCount;    
+    config["SampleMaxCount"]>>maxSampleCount;
     while(retrainIter<countRetrainIter && features.cols<maxSampleCount)
     {
         train_file.clear();
