@@ -1,18 +1,24 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <iostream>
 #include <caffe/caffe.hpp>
 #include <caffe/common.hpp>
-#include <deep_pyramid.h>
-#include <fstream>
-#include <string>
-using namespace cv;
+
+#include "deep_pyramid.h"
+
 using namespace std;
+using namespace cv;
 using namespace caffe;
 
 int main(int argc, char *argv[])
 {
+    // FIX: проверка аргументов командной строки на корректность
+    // правильный пример обработки аргументов
+    // https://github.com/ITLab-Vision/ITLab-Vision-deeplab/blob/movie-maker/extra/apps/movie_maker/samples/video_maker.cpp
     string config_file=argv[1];
     DeepPyramid pyramid(config_file, DeepPyramidMode::TEST);
 
@@ -40,6 +46,7 @@ int main(int argc, char *argv[])
     while(test_file>>img_path)
     {
         Mat image;
+        // FIX: расширение изображение надо вынести в константы
         image=imread(test_image_folder+img_path+".jpg");
         vector<ObjectBox> objects=pyramid.detect(image);
         output_file<<img_path<<endl;
