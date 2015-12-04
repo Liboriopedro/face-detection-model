@@ -1,15 +1,17 @@
-#ifndef DEEP_PYRAMID_H
-#define DEEP_PYRAMID_H
+#ifndef __DEEP_PYRAMID_H__
+#define __DEEP_PYRAMID_H__
+
+#include <iostream>
+#include <vector>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/ml/ml.hpp>
-#include <iostream>
 #include <caffe/caffe.hpp>
 #include <caffe/common.hpp>
-#include <vector>
 
+// FIX: cтранное использование директивы условной компиляции
 #if 1
 #include <stdio.h>
 #define TIMER_START(name) int64 t_##name = getTickCount()
@@ -23,6 +25,7 @@
 #define OBJECT 1
 #define NOT_OBJECT -1
 
+// FIX: переместить в отдельный модуль
 class ObjectBox
 {
 public:
@@ -31,13 +34,20 @@ public:
     cv::Rect norm5Box;
     cv::Rect pyramidImageBox;
     cv::Rect originalImageBox;
-    bool operator< (ObjectBox object)
+    bool operator<(const ObjectBox &object) const
     {
         return confidence<object.confidence;
     }
 };
-enum DeepPyramidMode {DETECT, TRAIN, TEST};
 
+enum DeepPyramidMode
+{
+    DETECT,
+    TRAIN,
+    TEST
+};
+
+// FIX: переместить в отдельный модуль
 class DeepPyramidConfiguration
 {
 public:
@@ -57,6 +67,7 @@ public:
     DeepPyramidConfiguration(std::string deep_peramid_config, DeepPyramidMode mode);
 };
 
+// FIX: переместить в отдельный модуль
 class DeepPyramid
 {
 public:
@@ -67,16 +78,17 @@ public:
 
     DeepPyramidConfiguration config;
     void addRootFilter(cv::Size filterSize, CvSVM* classifier);
-    void setImg(cv::Mat img);
-    std::vector<ObjectBox> detect(cv::Mat img);
+    void setImg(cv::Mat &img);
+    void detect(cv::Mat &img, std::vector<ObjectBox>&);
     DeepPyramid(int num_levels, const std::string& model_file,
                 const std::string& trained_file);
     cv::Mat getImageWithObjects();
-    void calculateToNorm5(cv::Mat image);
+    void calculateToNorm5(cv::Mat &image);
     int getNumLevel();
     void getFeatureVector(int levelIndx, cv::Point position, cv::Size size, cv::Mat& feature);
     cv::Size originalImageSize();
     int norm5SideLength();
+    
     //Rectangle transform
     cv::Rect boundingBoxAtLevel(int i, cv::Rect originalRect);
     cv::Rect getRectByNorm5Rect(cv::Rect rect);
@@ -88,6 +100,7 @@ public:
 
     std::string to_string(int i);
     DeepPyramid(std::string detector_config, DeepPyramidMode mode);
+
 private:
     cv::Mat originalImg;
     cv::Mat originalImgWithObjects;
@@ -110,6 +123,7 @@ private:
     void showImagePyramid();
     void createMax5PyramidTest();
     void showNorm5Pyramid();
+    
     //Image Pyramid
     cv::Size calculateLevelPyramidImageSize(int i);
     cv::Mat createLevelPyramidImage(int i);
@@ -149,6 +163,6 @@ private:
 
 };
 
-
+// FIX: переместить в утилиты
 double IOU(cv::Rect r1,cv::Rect r2);
 #endif // DEEP_PYRAMID_H

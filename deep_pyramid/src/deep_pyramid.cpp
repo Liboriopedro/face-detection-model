@@ -1,9 +1,11 @@
-#include <deep_pyramid.h>
-#include <nms.h>
 #include <sstream>
 #include <math.h>
 #include <assert.h>
 #include <time.h>
+
+#include "deep_pyramid.h"
+#include "nms.h"
+
 using namespace cv;
 using namespace std;
 using namespace caffe;
