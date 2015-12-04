@@ -1,19 +1,23 @@
+#include <fstream>
+#include <string>
+#include <iostream>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <iostream>
 #include <caffe/caffe.hpp>
 #include <caffe/common.hpp>
-#include <deep_pyramid.h>
-#include <fstream>
-#include <string>
+
+#include "deep_pyramid.h"
+
 using namespace cv;
 using namespace std;
 using namespace caffe;
 
-Rect ellipseToRect(int major_axis_radius,int minor_axis_radius,double angle,int center_x,int center_y)
+Rect ellipseToRect(int major_axis_radius, int minor_axis_radius, double angle,
+                   int center_x, int center_y)
 {
-    double alpha,betta;
+    double alpha, betta;
     alpha=atan(-major_axis_radius*tan(angle)/minor_axis_radius);
     betta=atan(major_axis_radius/(tan(angle)*minor_axis_radius));
     double xMax=center_x+minor_axis_radius*cos(alpha)*cos(angle);
@@ -48,6 +52,9 @@ Mat diagMatrix(int n, float scalar)
 {
     Mat I(n, n, CV_32FC1, Scalar::all(0));
 
+    // FIX: более простой способ создания диагольной матрицы
+    // Mat diagonal = I.diag();
+    // diagonal = Scalar(scalar)
     for(int i=0;i<n;i++)
     {
         I.at<float>(i,i)=scalar;
@@ -60,6 +67,7 @@ Point centerOfRect(Rect rect)
     return Point(rect.x+rect.width/2.0, rect.y+rect.height/2.0);
 }
 
+// FIX: странная добавка расширения, надо сразу передать полное название
 void readImg(string img_path, istream& file, Mat& img)
 {
     cout<<img_path<<endl;
@@ -77,14 +85,16 @@ void readObjectRect(istream& file, int n, vector<Rect>& objects)
 {
     for(int i=0;i<n;i++)
     {
-        Rect  rect=readEllipseToRect(file);
+        Rect rect=readEllipseToRect(file);
         objects.push_back(rect);
     }
 }
 
 int main(int argc, char *argv[])
 {
-
+    // FIX: проверка аргументов командной строки на корректность
+    // правильный пример обработки аргументов
+    // https://github.com/ITLab-Vision/ITLab-Vision-deeplab/blob/movie-maker/extra/apps/movie_maker/samples/video_maker.cpp
     string config_file=argv[1];
     DeepPyramid pyramid(config_file, DeepPyramidMode::TRAIN);
 
