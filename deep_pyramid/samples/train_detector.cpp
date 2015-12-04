@@ -117,6 +117,8 @@ int main(int argc, char *argv[])
     int iter=0;
     int maxStartTrainIter;
     config["StartSVMTrainIter"]>>maxStartTrainIter;
+    // FIX: по идее весь этот цикл создает набор сэмплов для обучения
+    // его имеет смысл вынести в отдельную функцию/метод класса
     while(train_file>>img_path && iter<maxStartTrainIter)
     {
         iter++;
@@ -210,7 +212,7 @@ int main(int argc, char *argv[])
     config["HardNegTrainIter"]>>countRetrainIter;
     int retrainIter=0;
     int maxSampleCount;
-    config["SampleMaxCount"]>>maxSampleCount;
+    config["SampleMaxCount"]>>maxSampleCount;    
     while(retrainIter<countRetrainIter && features.cols<maxSampleCount)
     {
         train_file.clear();
@@ -360,7 +362,7 @@ int main(int argc, char *argv[])
 //    XTTh=XT*Th;
 
 //    Wh=revXTX*XTTh;
-train_file.close();
-config.release();
+    train_file.close();
+    config.release();
     return 0;
 }
